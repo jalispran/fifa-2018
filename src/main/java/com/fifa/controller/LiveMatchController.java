@@ -1,6 +1,7 @@
 package com.fifa.controller;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fifa.appcode.ResponseCode;
+import com.fifa.model.MatchIdMapper;
+import com.fifa.model.repository.MatchIdMapperRepository;
 import com.fifa.official.AwayTeam;
 import com.fifa.official.EventTeam;
 import com.fifa.official.HomeTeam;
@@ -33,12 +36,18 @@ public class LiveMatchController {
 //	String matchId = "300331506";  		//"300331527";
 	
 	@Autowired
+	private MatchIdMapperRepository mapperRepository;
+	
+	@Autowired
 	private CommonService commonService;
 	
 	@PostMapping()
 	public ResponseEntity<?> getLiveMatchDetails(@RequestBody Input input) throws IOException{
 		Output out = new Output();
-		String matchIdFifaServer = input.getMatchId();
+		BigInteger matchId = input.getMatchId();
+		
+		MatchIdMapper matchIdMapper = mapperRepository.findByFifaMatchId(matchId);
+		String matchIdFifaServer = matchIdMapper.getMatchIdFifaServer();
 		
 		String eventUrl = getEventUrl(matchIdFifaServer);
 		
