@@ -1,7 +1,6 @@
 package com.fifa.controller;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fifa.model.MatchIdMapper;
-import com.fifa.model.repository.MatchIdMapperRepository;
 import com.fifa.official.Item;
 import com.fifa.official.LiveBloggingObject;
 import com.fifa.service.LiveBlogService;
@@ -39,9 +36,6 @@ public class LiveEventController {
 	@Autowired
 	private LiveBlogService liveBlogService;
 	
-	@Autowired
-	private MatchIdMapperRepository mapperRepository;
-	
 	@PostMapping()
 	@ResponseBody
 	public ResponseEntity<?> getLiveEvents(@RequestBody Input input	) throws IOException {
@@ -51,10 +45,7 @@ public class LiveEventController {
 		String apikey = liveBlogService.getApiKey();
 		out.setData("apiKey", apikey);
 		
-		BigInteger matchId = input.getMatchId();
-		
-		MatchIdMapper matchIdMapper = mapperRepository.findByFifaMatchId(matchId);
-		String matchIdFifaServer = matchIdMapper.getMatchIdFifaServer();
+		String matchIdFifaServer = input.getMatchId();
 		
 		String url = getLiveBloggingUrl(matchIdFifaServer);
 		
